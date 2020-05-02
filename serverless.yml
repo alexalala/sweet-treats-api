@@ -12,21 +12,98 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs10.x
-  stage: dev
-  region: us-east-1
+  runtime: nodejs12.x
+  stage: prod
+  region: eu-west-1
   # To load environment variables externally
   # rename env.example to .env and uncomment
   # the following line. Also, make sure to not
   # commit your .env.
   #
-  #environment:
-  #  SAMPLE_ENV_VAR: ${env:SAMPLE_ENV_VAR}
+  environment:
+    tableName: products
+    stripeSecretKey: ${env:STRIPE_SECRET_KEY}
+
+# Create our resources with separate CloudFormationmtemplates
+resources:
+  # API Gateway Errors
+  - ${file(resources/api-gateway-errors.yml)}
+
+# 'iamRoleStatements' defines the permission policy for the Lambda function.
+# In this case Lambda functions are granted with permissions to access DynamoDB.
+iamRoleStatements:
+- Effect: Allow
+  Action:
+    - dynamodb:DescribeTable
+    - dynamodb:Query
+    - dynamodb:Scan
+    - dynamodb:GetItem
+    - dynamodb:PutItem
+    - dynamodb:UpdateItem
+    - dynamodb:DeleteItem
+  Resource: "arn:aws:dynamodb:eu-west-1:975611200124:table/products"
 
 functions:
-  hello:
-    handler: handler.hello
+  create:
+    handler: create.main
     events:
       - http:
-          path: hello
-          method: get
+          path: product
+          method: post
+          cors: true
+          authorizer: aws_iam
+  get:
+    # Defines an HTTP API endpoint that calls the main function in get.js
+    # - path: url path is /product/{id}
+    # - method: GET request
+    handler: get.main
+    events:
+      - http:
+        path: product/{id}
+        method: get
+        cors: true
+        authorizer: aws_iam
+  list:
+    # Defines an HTTP API endpoint that calls the main function in list.js
+    # - path: url path is /product
+    # - method: GET request
+    handler: list.main
+    events:
+      - http:
+        path: product
+        method: get
+        cors: true
+        authorizer: aws_iam
+  update:
+    # Defines an HTTP API endpoint that calls the main function in update.js
+    # - path: url path is /product/{id}
+    # - method: PUT request
+    handler: update.main
+    events:
+      - http:
+        path: product/{id}
+        method: put
+        cors: true
+        authorizer: aws_iam
+  delete:
+    # Defines an HTTP API endpoint that calls the main function in delete.js
+    # - path: url path is /product/{id}
+    # - method: DELETE request
+    handler: delete.main
+    events:
+      - http:
+        path: product/{id}
+        method: delete
+        cors: true
+        authorizer: aws_iam
+  billing:
+    # Defines an HTTP API endpoint that calls the main function in billing.js
+    # - path: url path is /billing
+    # - method: POST request
+    handler: billing.main
+    events:
+      - http:
+        path: billing
+        method: post
+        cors: true
+        authorizer: aws_iam
