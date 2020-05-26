@@ -1,10 +1,7 @@
 import handler from "./libs/handler-lib";
 import dynamoDb from "./libs/dynamodb-lib";
 
-// Some faulty code
-dynamoDb.notExist();
-
-export const main = handler(async (event, context) => {
+export const main2 = handler(async (event, context) => {
     const params = {
         TableName: process.env.tableName,
         // 'Key' defines the partition key and sort key of the item to be retrieved
