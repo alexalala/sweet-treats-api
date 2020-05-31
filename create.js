@@ -11,7 +11,7 @@ export const main = handler(async (event, context) => {
         Item: {
             userId: event.requestContext.identity.cognitoIdentityId,
             productId: uuid.v1(),
-            name: data.name,
+            productName: data.name,
             price: data.price,
             description: data.description,
             attachment: data.attachment,

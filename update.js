@@ -14,9 +14,9 @@ export const main = handler(async (event, context) => {
         },
         // 'UpdateExpression' defines the attributes to be updated
         // 'ExpressionAttributeValues' defines the value in the update expression
-        UpdateExpression: "SET name = :name, price = :price, description = :description, attachment = :attachment",
+        UpdateExpression: "SET productName = :productName, price = :price, description = :description, attachment = :attachment",
         ExpressionAttributeValues: {
-            ":name": data.name || null,
+            ":productName": data.name || null,
             ":price": data.price || null,
             ":description": data.description || null,
             ":attachment": data.attachment || null
