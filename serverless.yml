@@ -57,6 +57,13 @@ functions:
           method: post
           cors: true
           authorizer: aws_iam
+  getAll:
+    handler: getAll.list
+    events:
+      - http:
+          path: product/all
+          method: get
+          cors: true
   get:
     # Defines an HTTP API endpoint that calls the main function in get.js
     # - path: url path is /product/{id}
